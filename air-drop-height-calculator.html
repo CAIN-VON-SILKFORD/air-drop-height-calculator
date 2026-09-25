@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Air Drop Height Calculator</title>
+<style>
+  :root {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --sub: #666;
+    --accent: #2563eb;
+    --border: #e2e2e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121214;
+      --card: #1c1c1f;
+      --text: #f0f0f0;
+      --sub: #a0a0a5;
+      --accent: #60a5fa;
+      --border: #333336;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121214;
+    --card: #1c1c1f;
+    --text: #f0f0f0;
+    --sub: #a0a0a5;
+    --accent: #60a5fa;
+    --border: #333336;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+  }
+  h1 { font-size: 1.3rem; margin-bottom: 4px; }
+  p.sub { color: var(--sub); font-size: 0.9rem; margin-top: 0; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 16px;
+  }
+  label { display: block; font-size: 0.85rem; color: var(--sub); margin-bottom: 6px; }
+  input[type="number"], select {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+  }
+  .result {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: white;
+    text-align: center;
+  }
+  .result .num { font-size: 1.8rem; font-weight: 700; }
+  .result .lbl { font-size: 0.8rem; opacity: 0.9; }
+  .formula {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--sub);
+    margin-top: 8px;
+  }
+  .note {
+    font-size: 0.8rem;
+    color: var(--sub);
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Air Drop Height Calculator</h1>
+  <p class="sub">Using free-fall time: h = 4.9 × t²</p>
+
+  <div class="card">
+    <label for="t">Time for object to fall (seconds)</label>
+    <input type="number" id="t" step="0.01" min="0" placeholder="e.g. 3.2" inputmode="decimal">
+    <div class="formula">g = 9.8 m/s²</div>
+
+    <label for="unit" style="margin-top:14px;">Result unit</label>
+    <select id="unit">
+      <option value="m">Meters (m)</option>
+      <option value="cm">Centimeters (cm)</option>
+    </select>
+
+    <div class="result">
+      <div class="num" id="h">—</div>
+      <div class="lbl" id="hlbl">estimated height (meters)</div>
+    </div>
+  </div>
+
+  <div class="note">
+    Drop a small dense object (not thrown) from the top and time it until it hits the ground.
+    This method assumes negligible air resistance, so use something heavier like a stone or bolt
+    rather than paper. Timing error matters more for shorter buildings — a phone's slow-motion
+    video gives more accurate results than a manual stopwatch.
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('t');
+  const out = document.getElementById('h');
+  const unitSel = document.getElementById('unit');
+  const hlbl = document.getElementById('hlbl');
+  function calc() {
+    const t = parseFloat(input.value);
+    const unit = unitSel.value;
+    hlbl.textContent = unit === 'cm' ? 'estimated height (centimeters)' : 'estimated height (meters)';
+    if (isNaN(t) || t < 0) {
+      out.textContent = '—';
+      return;
+    }
+    let h = 4.9 * t * t; // meters
+    if (unit === 'cm') h = h * 100;
+    out.textContent = h.toFixed(2) + ' ' + unit;
+  }
+  input.addEventListener('input', calc);
+  unitSel.addEventListener('change', calc);
+</script>
+</body>
+</html>
